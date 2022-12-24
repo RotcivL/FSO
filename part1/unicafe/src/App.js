@@ -1,8 +1,8 @@
 import { useState } from "react";
-const Header = (props) => <h1>{props.header}</h1>;
+const Header = ({ header }) => <h1>{header}</h1>;
 
-const Button = (props) => (
-  <button onClick={props.handleClick}>{props.text}</button>
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
 );
 
 const Display = ({ text, value }) => {
@@ -15,7 +15,14 @@ const Display = ({ text, value }) => {
 
 const Statistics = ({ good, neutral, bad }) => {
   const total = good + neutral + bad;
-
+  if (total === 0) {
+    return (
+      <div>
+        <Header header={"statistics"} />
+        No feedback given
+      </div>
+    );
+  }
   return (
     <div>
       <Header header={"statistics"} />
@@ -28,6 +35,7 @@ const Statistics = ({ good, neutral, bad }) => {
     </div>
   );
 };
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
