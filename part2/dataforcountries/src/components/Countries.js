@@ -1,6 +1,10 @@
 import Country from "./Country";
+import ShowButton from "./ShowButton";
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, handleButton, showCountry }) => {
+  if (showCountry) {
+    return <Country country={showCountry} />;
+  }
   if (countries.length > 10) {
     return <p>Too many matches, specify another filter</p>;
   } else if (countries.length === 1) {
@@ -9,7 +13,11 @@ const Countries = ({ countries }) => {
     return (
       <>
         {countries.map((country) => (
-          <p key={country.name}>{country.name}</p>
+          <ShowButton
+            key={country.name}
+            onClick={() => handleButton(country)}
+            country={country}
+          />
         ))}
       </>
     );

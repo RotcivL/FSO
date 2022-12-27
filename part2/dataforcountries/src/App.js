@@ -6,6 +6,7 @@ import Countries from "./components/Countries";
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState("");
+  const [showCountry, setShowCountry] = useState();
 
   useEffect(() => {
     axios.get("https://restcountries.com/v2/all").then((response) => {
@@ -13,8 +14,14 @@ const App = () => {
     });
   }, []);
 
-  const handleFilterChange = (event) =>
+  const handleFilterChange = (event) => {
     setFilter(event.target.value.toLowerCase());
+    setShowCountry();
+  };
+
+  const handleButton = (country) => {
+    setShowCountry(country);
+  };
 
   const filteredCountries =
     filter.length === 0
@@ -27,7 +34,11 @@ const App = () => {
     <div>
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
 
-      <Countries countries={filteredCountries} />
+      <Countries
+        countries={filteredCountries}
+        handleButton={handleButton}
+        showCountry={showCountry}
+      />
     </div>
   );
 };
