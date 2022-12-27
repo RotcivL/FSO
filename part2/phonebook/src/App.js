@@ -46,10 +46,12 @@ const App = () => {
     person.name.toLowerCase().includes(filter)
   );
 
-  const handleDelete = (id) => {
-    personService._delete(id).then(() => {
-      setPersons(persons.filter((person) => person.id !== id));
-    });
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService._delete(person.id).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+      });
+    }
   };
 
   return (
