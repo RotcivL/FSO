@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
 let persons = [
   {
     id: 1,
@@ -29,26 +30,40 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(p => p.id === id)
+  const id = Number(request.params.id);
+  const person = persons.find((p) => p.id === id);
   if (person) {
-    response.json(person)
+    response.json(person);
   } else {
-    response.status(404).end()
+    response.status(404).end();
   }
 });
 
 app.get("/info", (request, response) => {
-  const info = `<div><p>Phonebook has info for ${persons.length} people</p> <p>${new Date()}</p></div>`;
+  const count = persons.length;
+  const info = `<div><p>Phonebook has info for ${count} people</p> <p>${new Date()}</p></div>`;
   response.send(info);
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(n => n.id !== id)
+  const id = Number(request.params.id);
+  persons = persons.filter((n) => n.id !== id);
 
-  response.status(204).end()
-})
+  response.status(204).end();
+});
+
+app.post("/api/persons/", (request, response) => {
+  const body = request.body;
+  const MAX = 10000;
+  const person = {
+    id: Math.floor(Math.random() * MAX),
+    name: body.name,
+    number: body.number,
+  };
+
+  persons = persons.concat(person);
+  response.json(person);
+});
 
 const PORT = 3001;
 app.listen(PORT, (request, response) => {
