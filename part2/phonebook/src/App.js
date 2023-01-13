@@ -68,15 +68,23 @@ const App = () => {
       id: persons.length + 1,
     };
 
-    personService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setMessage(`Added ${returnedPerson.name}`);
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
-      setNewName("");
-      setNewNumber("");
-    });
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setMessage(`Added ${returnedPerson.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
+    setNewName("");
+    setNewNumber("");
   };
 
   const filteredPersons = persons.filter((person) =>
