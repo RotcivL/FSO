@@ -6,6 +6,8 @@ const cors = require("cors");
 
 app.use(cors());
 
+app.use(express.static("build"));
+
 const morgan = require("morgan");
 morgan.token("body", function (request, response) {
   if (request.method === "POST") {
