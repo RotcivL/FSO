@@ -62,17 +62,23 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons/", (request, response, next) => {
   const body = request.body;
 
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  });
+  Person.findOne({ name: body.name }).then((person) => {
+    if (person) {
+      response.status(400).send({ error: "name already in phonebook" });
+    } else {
+      const person = new Person({
+        name: body.name,
+        number: body.number,
+      });
 
-  person
-    .save()
-    .then((savedPerson) => {
-      response.json(savedPerson);
-    })
-    .catch((error) => next(error));
+      person
+        .save()
+        .then((savedPerson) => {
+          response.json(savedPerson);
+        })
+        .catch((error) => next(error));
+    }
+  });
 });
 
 app.put("/api/persons/:id", (request, response, next) => {

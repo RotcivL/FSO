@@ -49,13 +49,10 @@ const App = () => {
             }, 5000);
           })
           .catch((error) => {
-            setErrorMessage(
-              `Information of ${newName} has already been removed from server`
-            );
+            setErrorMessage(error.response.data.error);
             setTimeout(() => {
               setErrorMessage(null);
             }, 5000);
-            setPersons(persons.filter((p) => p.id !== found.id));
           });
       }
       setNewName("");
