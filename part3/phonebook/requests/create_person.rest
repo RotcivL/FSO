@@ -1,0 +1,10 @@
+POST https://fsophonebookapp.fly.dev/api/persons
+Content-Type: application/json
+
+{
+    "name": "adam",
+    "number": "12343234"
+}
+
+###
+GET https://fsophonebookapp.fly.dev/api/persons
