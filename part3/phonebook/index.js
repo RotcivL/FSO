@@ -63,23 +63,23 @@ app.post("/api/persons/", (request, response) => {
     });
   }
 
-  const found = persons.find((p) => p.name === body.name);
+  // const found = persons.find((p) => p.name === body.name);
 
-  if (found) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (found) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
-  const MAX = 10000;
-  const person = {
-    id: Math.floor(Math.random() * MAX),
+  // const MAX = 10000;
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-  response.json(person);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT;
