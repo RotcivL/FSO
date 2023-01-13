@@ -28,19 +28,27 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((p) => p.id === id);
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
-  const count = persons.length;
-  const info = `<div><p>Phonebook has info for ${count} people</p> <p>${new Date()}</p></div>`;
-  response.send(info);
+  Person.find({})
+    .then((persons) => {
+      response.send(
+        `<div><p>Phonebook has info for ${
+          persons.length
+        } people</p> <p>${new Date()}</p></div>`
+      );
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -64,15 +72,6 @@ app.post("/api/persons/", (request, response) => {
     });
   }
 
-  // const found = persons.find((p) => p.name === body.name);
-
-  // if (found) {
-  //   return response.status(400).json({
-  //     error: "name must be unique",
-  //   });
-  // }
-
-  // const MAX = 10000;
   const person = new Person({
     name: body.name,
     number: body.number,
