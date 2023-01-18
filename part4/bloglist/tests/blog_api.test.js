@@ -45,19 +45,6 @@ test("a valid blog can be added", async () => {
   expect(blogsNoId).toContainEqual(newBlog);
 });
 
-test("blog without title is not added", async () => {
-  const newBlog = {
-    author: "RotcivL",
-    url: "https://newblogrotcivl.com",
-  };
-
-  await api.post("/api/blogs").send(newBlog).expect(400);
-
-  const blogsAtEnd = await helper.blogsInDb();
-
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
-});
-
 test("default likes to 0 if property is missing", async () => {
   const newBlog = {
     title: "new blog",
@@ -72,6 +59,30 @@ test("default likes to 0 if property is missing", async () => {
     .expect("Content-Type", /application\/json/);
 
   expect(response.body.likes).toBeDefined();
+});
+
+test("blog without title is not added", async () => {
+  const newBlog = {
+    url: "https://newblogrotcivl.com",
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
+test("blog without url is not added", async () => {
+  const newBlog = {
+    title: "new blog",
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
 afterAll(() => {
