@@ -9,9 +9,7 @@ const Blog = require("../models/blogs");
 beforeEach(async () => {
   await Blog.deleteMany({});
 
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-  const promiseArray = blogObjects.map((blog) => blog.save());
-  await Promise.all(promiseArray);
+  await Blog.insertMany(helper.initialBlogs);
 });
 
 test("correct number of blogs are returned", async () => {
@@ -83,6 +81,17 @@ test("blog without url is not added", async () => {
   const blogsAtEnd = await helper.blogsInDb();
 
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
+test("a blog can be deleted", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtStart[0];
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+  expect(blogsAtEnd).not.toContainEqual(blogToDelete);
 });
 
 afterAll(() => {
