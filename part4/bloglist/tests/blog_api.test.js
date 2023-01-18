@@ -58,6 +58,22 @@ test("blog without title is not added", async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
+test("default likes to 0 if property is missing", async () => {
+  const newBlog = {
+    title: "new blog",
+    author: "RotcivL",
+    url: "https://newblogrotcivl.com",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  expect(response.body.likes).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
