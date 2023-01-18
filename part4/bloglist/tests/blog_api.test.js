@@ -69,6 +69,11 @@ test("correct number of blogs are returned", async () => {
   expect(response.body).toHaveLength(initialBlogs.length);
 });
 
+test("id property exists", async () => {
+  const response = await api.get("/api/blogs");
+  expect(response.body[0].id).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
