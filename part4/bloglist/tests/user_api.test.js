@@ -144,3 +144,7 @@ test("fresh username successfully creates user", async () => {
   const usernames = usersAtEnd.map((u) => u.username);
   expect(usernames).toContain(newUser.username);
 });
+
+afterAll(() => {
+  mongoose.connection.close();
+});
