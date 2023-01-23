@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +13,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -28,6 +31,14 @@ const App = () => {
     }
   }, [])
 
+  const notify = ( message, type='info' ) => {
+    console.log(message);
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -37,10 +48,11 @@ const App = () => {
       window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
+      notify("Successfully logged in")
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log(exception);
+      notify('wrong username or password', 'alert')
     }
   }
 
@@ -48,6 +60,7 @@ const App = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBloglistUser')
     blogService.setToken(null)
+    notify('Logged Out')
   }
 
   const submitForm = async (event) => {
@@ -61,11 +74,12 @@ const App = () => {
       
       const response = await blogService.create(blogObject)
       setBlogs(blogs.concat(response))
+      notify(`a new blog ${response.title} by ${response.author} added`)
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (exception) {
-      console.log(exception);
+      notify(`missing title or url`, 'alert')
     }
   }
 
@@ -150,6 +164,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification notification={notification} />
       {user === null ?
         loginForm() :
         displayBlogs() 
