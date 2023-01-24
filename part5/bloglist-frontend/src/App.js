@@ -16,9 +16,10 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      const orderedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+      setBlogs(orderedBlogs)
+    }) 
   }, [])
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const App = () => {
   const updateLikes = async (id, blogObject) => {
     try {
       const response = await blogService.update(id, blogObject)
-      setBlogs(blogs.map((blog)=> blog.id === id ? response : blog))
+      setBlogs(blogs.map((blog)=> blog.id === id ? response : blog).sort((a,b) => b.likes - a.likes))
       notify(`blog ${response.title} by ${response.author} likes increased`)
     } catch (exception) {
       notify(exception.response.data.error)
