@@ -78,6 +78,16 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blog) => {
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
+      notify(`Successfully removed blog ${blog.title} by ${blog.author}` )
+    } catch (exception) {
+      notify(exception.response.data.error)
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -95,7 +105,7 @@ const App = () => {
           <BlogForm createBlog={submitForm} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
+          <Blog key={blog.id} blog={blog} user={user} updateLikes={updateLikes} remove={removeBlog} />
         )}
         </div>
       }
