@@ -42,3 +42,16 @@ test('renders url and likes when button is clicked', async () => {
   expect(other).toHaveTextContent(`${blog.url}`)
   expect(other).toHaveTextContent(`likes ${blog.likes}`)
 })
+
+test('event handler for likes is called twice for two clicks', async () => {
+  const mockHandler = jest.fn()
+  const user = userEvent.setup()
+
+  render(<Blog blog={blog} user={userObject} updateLikes={mockHandler} />)
+
+  const likeButton = screen.getByText('like')
+
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
