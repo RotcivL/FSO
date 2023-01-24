@@ -31,7 +31,6 @@ const App = () => {
   }, [])
 
   const notify = ( message, type='info' ) => {
-    console.log(message);
     setNotification({ message, type })
     setTimeout(() => {
       setNotification(null)
@@ -68,6 +67,16 @@ const App = () => {
     }
   }
 
+  const updateLikes = async (id, blogObject) => {
+    try {
+      const response = await blogService.update(id, blogObject)
+      setBlogs(blogs.map((blog)=> blog.id === id ? response : blog))
+      notify(`blog ${response.title} by ${response.author} likes increased`)
+    } catch (exception) {
+      notify(exception.response.data.error)
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -85,7 +94,7 @@ const App = () => {
           <BlogForm createBlog={submitForm} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
         )}
         </div>
       }
