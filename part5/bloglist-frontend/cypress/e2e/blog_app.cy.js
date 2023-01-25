@@ -41,4 +41,31 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('input#title').type('cypress test blog')
+      cy.get('input#author').type('cypress test author')
+      cy.get('input#url').type('http://www.cypresstest.com')
+      cy.get('button').contains('create').click()
+
+      cy.get('.blogOther').should('not.be.visible')
+      cy.get('.blog')
+        .should('contain', 'cypress test blog cypress test author')
+        .get('button').contains('view').click()
+
+      cy.get('.blogOther')
+        .should('be.visible')
+        .and('contain', 'http://www.cypresstest.com')
+        .and('contain', 'likes 0')
+        .and('contain', 'Matti Luukkainen')
+        .get('button#likeButton')
+        .get('button#deleteBlog')
+    })
+  })
 })
