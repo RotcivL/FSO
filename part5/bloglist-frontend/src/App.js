@@ -84,7 +84,7 @@ const App = () => {
       setBlogs(blogs.filter((b) => b.id !== blog.id))
       notify(`Successfully removed blog ${blog.title} by ${blog.author}` )
     } catch (exception) {
-      notify(exception.response.data.error)
+      notify(exception.response.data.error, 'alert')
     }
   }
 

@@ -47,7 +47,7 @@ describe('Blog app', function() {
       cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('new blog').click()
       cy.get('input#title').type('cypress test blog')
       cy.get('input#author').type('cypress test author')
@@ -111,6 +111,35 @@ describe('Blog app', function() {
         cy.get('.info')
           .should('contain', 'blog first cypress test blog by first cypress test author likes increased')
           .and('have.css', 'color', 'rgb(0, 128, 0)')
+      })
+
+      it('user can delete blog they created', function() {
+        cy.get('.blog').should('have.length', 2)
+        cy.contains('second cypress test blog').contains('view').click()
+
+        cy.get('.removeButton').eq(1).click()
+
+        cy.get('.info')
+          .should('contain', 'Successfully removed blog second cypress test blog by second cypress test author')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+        cy.get('.blog')
+          .should('have.length', 1)
+          .and('not.contain', 'second cypress test blog')
+      })
+
+      it.only('user can not delete blog someone else created', function() {
+        cy.get('.blog').should('have.length', 2)
+        cy.contains('first cypress test blog').contains('view').click()
+
+        cy.get('.removeButton').eq(0)
+          .should('not.be.visible')
+          .click({ force: true })
+
+        cy.get('.alert')
+          .should('contain', 'invalid user')
+          .and('have.css', 'color', 'rgb(255, 0, 0)')
+        cy.get('.blog')
+          .should('have.length', 2)
       })
     })
 
