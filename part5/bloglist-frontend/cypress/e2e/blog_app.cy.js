@@ -73,7 +73,7 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'first cypress test blog',
           author: 'first cypress test author',
-          url: 'http://www.firstcypresstest.com'
+          url: 'http://www.firstcypresstest.com',
         })
 
         cy.contains('logout').click()
@@ -89,14 +89,15 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'second cypress test blog',
           author: 'second cypress test author',
-          url: 'second http://www.secondcypresstest.com'
+          url: 'second http://www.secondcypresstest.com',
+          likes: 1
         })
       })
 
       it('Users can like blog they posted', function() {
         cy.contains('second cypress test blog').contains('view').click()
 
-        cy.get('.likeButton').eq(1).click()
+        cy.get('.likeButton').eq(0).click()
 
         cy.get('.info')
           .should('contain', 'blog second cypress test blog by second cypress test author likes increased')
@@ -106,7 +107,7 @@ describe('Blog app', function() {
       it('Users can like blog someone else posted', function() {
         cy.contains('first cypress test blog').contains('view').click()
 
-        cy.get('.likeButton').eq(0).click()
+        cy.get('.likeButton').eq(1).click()
 
         cy.get('.info')
           .should('contain', 'blog first cypress test blog by first cypress test author likes increased')
@@ -117,7 +118,7 @@ describe('Blog app', function() {
         cy.get('.blog').should('have.length', 2)
         cy.contains('second cypress test blog').contains('view').click()
 
-        cy.get('.removeButton').eq(1).click()
+        cy.get('.removeButton').eq(0).click()
 
         cy.get('.info')
           .should('contain', 'Successfully removed blog second cypress test blog by second cypress test author')
@@ -127,11 +128,11 @@ describe('Blog app', function() {
           .and('not.contain', 'second cypress test blog')
       })
 
-      it.only('user can not delete blog someone else created', function() {
+      it('user can not delete blog someone else created', function() {
         cy.get('.blog').should('have.length', 2)
         cy.contains('first cypress test blog').contains('view').click()
 
-        cy.get('.removeButton').eq(0)
+        cy.get('.removeButton').eq(1)
           .should('not.be.visible')
           .click({ force: true })
 
@@ -140,6 +141,19 @@ describe('Blog app', function() {
           .and('have.css', 'color', 'rgb(255, 0, 0)')
         cy.get('.blog')
           .should('have.length', 2)
+      })
+
+      describe('blog are sorted', function() {
+        it('when a blog gets more likes it should be ordered first', function() {
+          cy.get('.blog').eq(0).should('contain', 'second cypress test blog')
+          cy.get('.blog').eq(1).should('contain', 'first cypress test blog')
+
+          cy.get('.blog').eq(1).contains('view').click()
+          cy.get('.likeButton').eq(1).click().click()
+
+          cy.get('.blog').eq(0).should('contain', 'first cypress test blog')
+          cy.get('.blog').eq(1).should('contain', 'second cypress test blog')
+        })
       })
     })
 
