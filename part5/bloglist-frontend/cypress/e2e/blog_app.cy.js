@@ -144,12 +144,15 @@ describe('Blog app', function() {
       })
 
       describe('blog are sorted', function() {
-        it('when a blog gets more likes it should be ordered first', function() {
+        it.only('when a blog gets more likes it should be ordered first', function() {
           cy.get('.blog').eq(0).should('contain', 'second cypress test blog')
           cy.get('.blog').eq(1).should('contain', 'first cypress test blog')
 
           cy.get('.blog').eq(1).contains('view').click()
-          cy.get('.likeButton').eq(1).click().click()
+          Cypress._.times(2, () => {
+            cy.get('.likeButton').eq(1).click()
+            cy.wait(300)
+          })
 
           cy.get('.blog').eq(0).should('contain', 'first cypress test blog')
           cy.get('.blog').eq(1).should('contain', 'second cypress test blog')
