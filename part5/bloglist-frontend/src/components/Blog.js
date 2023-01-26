@@ -51,10 +51,10 @@ const Blog = ({ blog, user, updateLikes, remove }) => {
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}
-          <button onClick={handleLikes} id='likeButton'>like</button>
+          <button onClick={handleLikes} className='likeButton'>like</button>
         </div>
         <div>{blog.user.name}</div>
-        <button style={showIfUser} onClick={deleteBlog} id='deleteBlog'>remove</button>
+        <button style={showIfUser} onClick={deleteBlog} className='removeButton'>remove</button>
       </div>
 
     </div>

@@ -47,7 +47,7 @@ describe('Blog app', function() {
       cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
-    it('A blog can be created', function() {
+    it.only('A blog can be created', function() {
       cy.contains('new blog').click()
       cy.get('input#title').type('cypress test blog')
       cy.get('input#author').type('cypress test author')
@@ -64,8 +64,56 @@ describe('Blog app', function() {
         .and('contain', 'http://www.cypresstest.com')
         .and('contain', 'likes 0')
         .and('contain', 'Matti Luukkainen')
-        .get('button#likeButton')
-        .get('button#deleteBlog')
+        .and('contain', 'like')
+        .and('contain', 'remove')
     })
+
+    describe('Interact with existing blog', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'first cypress test blog',
+          author: 'first cypress test author',
+          url: 'http://www.firstcypresstest.com'
+        })
+
+        cy.contains('logout').click()
+
+        const user = {
+          name: 'John Smith',
+          username: 'smith',
+          password: 'jsmoih'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users/', user)
+        cy.login({ username: 'smith', password: 'jsmoih' })
+
+        cy.createBlog({
+          title: 'second cypress test blog',
+          author: 'second cypress test author',
+          url: 'second http://www.secondcypresstest.com'
+        })
+      })
+
+      it('Users can like blog they posted', function() {
+        cy.contains('second cypress test blog').contains('view').click()
+
+        cy.get('.likeButton').eq(1).click()
+
+        cy.get('.info')
+          .should('contain', 'blog second cypress test blog by second cypress test author likes increased')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+      })
+
+      it('Users can like blog someone else posted', function() {
+        cy.contains('first cypress test blog').contains('view').click()
+
+        cy.get('.likeButton').eq(0).click()
+
+        cy.get('.info')
+          .should('contain', 'blog first cypress test blog by first cypress test author likes increased')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+      })
+    })
+
+
   })
 })
