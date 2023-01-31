@@ -3,8 +3,21 @@ import {
   Routes,
   Route,
   Link,
-  useMatch
+  useMatch,
+  useNavigate
 } from "react-router-dom"
+
+const Notification = ({ notification }) => {
+  if (!notification) {
+    return null
+  }
+
+  return (
+    <div>
+      {notification}
+    </div>
+  )
+}
 
 const Menu = () => {
   const padding = {
@@ -37,7 +50,7 @@ const Anecdote = ({ anecdote }) => {
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
       <p>has {anecdote.votes} votes</p>
-      <p>for more info see {anecdote.info}</p>
+      <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>
     </div>
   )
 }
@@ -69,6 +82,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -78,6 +92,9 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.setNotification(`a new anecdote ${content} created!`)
+    setTimeout(()=> props.setNotification(''), 5000)
+    navigate('/')
   }
 
   return (
@@ -143,7 +160,6 @@ const App = () => {
   }
 
   const match = useMatch('/anecdotes/:id')
-  console.log(match);
   const anecdote = match
     ? anecdotes.find(a => a.id === Number(match.params.id))
     : null
@@ -151,12 +167,13 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
+      <Notification notification={notification}/>
       <Menu />
       <Routes>
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/about' element={<About />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
       </Routes>
       <Footer />
     </div>
