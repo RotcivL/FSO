@@ -20,17 +20,17 @@ const create = async (newObject) => {
   return request.data
 }
 
-const update = async (id, newObject) => {
-  const request = await axios.put(`${baseUrl}/${id}`, newObject)
+const update = async (newObject) => {
+  const request = await axios.put(`${baseUrl}/${newObject.id}`, newObject)
   return request.data
 }
 
-const remove = async (id) => {
+const remove = async (object) => {
   const config = {
     headers: { Authorization: token },
   }
 
-  const request = await axios.delete(`${baseUrl}/${id}`, config)
+  const request = await axios.delete(`${baseUrl}/${object.id}`, config)
   return request.data
 }
 
