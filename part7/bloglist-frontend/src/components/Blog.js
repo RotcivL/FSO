@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { incrementLike, deleteBlog } from '../reducers/blogReducer'
-import { setNotification } from '../reducers/notificationReducer'
 
 const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
   if (!visible) return null
@@ -22,9 +21,10 @@ const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
   )
 }
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
+  const user = useSelector((state) => state.user)
 
   const blogStyle = {
     paddingTop: 10,
@@ -32,30 +32,6 @@ const Blog = ({ blog, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  }
-
-  const likeBlog = () => {
-    dispatch(incrementLike(blog))
-    dispatch(
-      setNotification(
-        { message: `blog ${blog.title} by ${blog.author} likes increased` },
-        3
-      )
-    )
-  }
-
-  const removeBlog = () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} added`)) {
-      dispatch(deleteBlog(blog))
-      dispatch(
-        setNotification(
-          {
-            message: `Successfully removed blog ${blog.title} by ${blog.author}`,
-          },
-          3
-        )
-      )
-    }
   }
 
   return (
@@ -67,22 +43,30 @@ const Blog = ({ blog, user }) => {
       <BlogDetails
         blog={blog}
         visible={visible}
-        likeBlog={likeBlog}
-        removeBlog={removeBlog}
+        likeBlog={() => {
+          dispatch(incrementLike(blog))
+        }}
+        removeBlog={() => {
+          if (
+            window.confirm(`Remove blog ${blog.title} by ${blog.author} added`)
+          ) {
+            dispatch(deleteBlog(blog))
+          }
+        }}
         own={blog.user && user.username === blog.user.username}
       />
     </div>
   )
 }
 
-const Bloglist = ({ user }) => {
+const Bloglist = () => {
   const byLIkes = (a1, a2) => (a2.likes > a1.likes ? 1 : -1)
   const blogs = useSelector((state) => [...state.blog].sort(byLIkes))
 
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )

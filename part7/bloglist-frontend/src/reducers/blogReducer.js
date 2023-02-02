@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import { setNotification } from './notificationReducer'
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -33,25 +34,69 @@ export const initializeBlogs = () => {
 
 export const createBlog = (blogObject) => {
   return async (dispatch) => {
-    const newBlog = await blogService.create(blogObject)
-    dispatch(appendBlog(newBlog))
+    try {
+      const newBlog = await blogService.create(blogObject)
+      dispatch(appendBlog(newBlog))
+      dispatch(
+        setNotification(
+          { message: `a new blog ${newBlog.title} by ${newBlog.author} added` },
+          5
+        )
+      )
+    } catch (exception) {
+      dispatch(
+        setNotification({ message: 'missing title or url', type: 'alert' }, 5)
+      )
+    }
   }
 }
 
 export const incrementLike = (blog) => {
   return async (dispatch) => {
-    const updatedBlog = await blogService.update({
-      ...blog,
-      likes: blog.likes + 1,
-    })
-    dispatch(setBlog(updatedBlog))
+    try {
+      const updatedBlog = await blogService.update({
+        ...blog,
+        likes: blog.likes + 1,
+      })
+      dispatch(setBlog(updatedBlog))
+      dispatch(
+        setNotification(
+          { message: `blog ${blog.title} by ${blog.author} likes increased` },
+          5
+        )
+      )
+    } catch (exception) {
+      dispatch(
+        setNotification(
+          { message: exception.response.data.error, type: 'alert' },
+          5
+        )
+      )
+    }
   }
 }
 
 export const deleteBlog = (blog) => {
   return async (dispatch) => {
-    await blogService.remove(blog)
-    dispatch(removeBlog(blog))
+    try {
+      await blogService.remove(blog)
+      dispatch(removeBlog(blog))
+      dispatch(
+        setNotification(
+          {
+            message: `Successfully removed blog ${blog.title} by ${blog.author}`,
+          },
+          5
+        )
+      )
+    } catch (exception) {
+      dispatch(
+        setNotification(
+          { message: exception.response.data.error, type: 'alert' },
+          5
+        )
+      )
+    }
   }
 }
 
