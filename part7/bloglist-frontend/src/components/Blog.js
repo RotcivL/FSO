@@ -1,30 +1,13 @@
 import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { incrementLike, deleteBlog } from '../reducers/blogReducer'
 
-const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
-  if (!visible) return null
-
-  const addedBy = blog.user && blog.user.name ? blog.user.name : 'anonymous'
-
-  return (
-    <div>
-      <div>
-        <a href={blog.url}>{blog.url}</a>
-      </div>
-      <div>
-        {blog.likes} likes <button onClick={likeBlog}>like</button>
-      </div>
-      {addedBy}
-      {own && <button onClick={removeBlog}>remove</button>}
-    </div>
-  )
-}
-
-const Blog = ({ blog }) => {
-  const dispatch = useDispatch()
+const Blog = ({ blog, user, updateLikes, remove }) => {
   const [visible, setVisible] = useState(false)
-  const user = useSelector((state) => state.user)
+
+  const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -34,42 +17,54 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   }
 
+  const buttonText = visible ? 'hide' : 'view'
+
+  const handleLikes = () => {
+    updateLikes(blog.id, {
+      user: blog.user,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+    })
+  }
+
+  const showIfUser = {
+    display: user.id === blog.user.id ? '' : 'none',
+    background: 'blue',
+  }
+
+  const deleteBlog = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} added`)) {
+      remove(blog)
+    }
+  }
+
   return (
     <div style={blogStyle} className="blog">
-      {blog.title} {blog.author}
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'view'}
-      </button>
-      <BlogDetails
-        blog={blog}
-        visible={visible}
-        likeBlog={() => {
-          dispatch(incrementLike(blog))
-        }}
-        removeBlog={() => {
-          if (
-            window.confirm(`Remove blog ${blog.title} by ${blog.author} added`)
-          ) {
-            dispatch(deleteBlog(blog))
-          }
-        }}
-        own={blog.user && user.username === blog.user.username}
-      />
+      <div className="blogTitleAuthor">
+        {blog.title} {blog.author}
+        <button onClick={toggleVisibility}>{buttonText}</button>
+      </div>
+      <div style={showWhenVisible} className="blogOther">
+        <div>{blog.url}</div>
+        <div>
+          likes {blog.likes}
+          <button onClick={handleLikes} className="likeButton">
+            like
+          </button>
+        </div>
+        <div>{blog.user.name}</div>
+        <button
+          style={showIfUser}
+          onClick={deleteBlog}
+          className="removeButton"
+        >
+          remove
+        </button>
+      </div>
     </div>
   )
 }
 
-const Bloglist = () => {
-  const byLIkes = (a1, a2) => (a2.likes > a1.likes ? 1 : -1)
-  const blogs = useSelector((state) => [...state.blog].sort(byLIkes))
-
-  return (
-    <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-    </div>
-  )
-}
-
-export default Bloglist
+export default Blog

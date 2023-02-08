@@ -1,31 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import userService from '../services/users'
 import { setNotification } from './notificationReducer'
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: null,
+  initialState: { user: null, users: [] },
   reducers: {
     setUser(state, action) {
-      return action.payload
+      return { ...state, user: action.payload }
     },
-    resetUser() {
-      return null
+    setUsers(state, action) {
+      return { ...state, users: action.payload }
+    },
+    resetUser(state) {
+      return { ...state, user: null }
     },
   },
 })
 
-export const { setUser, resetUser } = userSlice.actions
+export const { setUser, resetUser, setUsers } = userSlice.actions
 
-export const initializeUser = () => {
-  return (dispatch) => {
+export const initializeUsers = () => {
+  return async (dispatch) => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       dispatch(setUser(user))
       blogService.setToken(user.token)
     }
+    const users = await userService.getAll()
+    dispatch(setUsers(users))
   }
 }
 
