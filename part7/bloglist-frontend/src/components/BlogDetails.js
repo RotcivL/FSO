@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { incrementLike, deleteBlog } from '../reducers/blogReducer'
+import Comment from './Comment'
 const BlogDetails = ({ blog }) => {
   if (!blog) {
     return null
@@ -25,6 +26,7 @@ const BlogDetails = ({ blog }) => {
       </div>
       added by {blog.user.name}
       {own && <button onClick={remove}>remove</button>}
+      <Comment comments={blog.comments} />
     </div>
   )
 }
