@@ -15,6 +15,8 @@ import { initializeBlogs } from './reducers/blogReducer'
 
 import { Route, Routes, Link, useMatch, Navigate } from 'react-router-dom'
 
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
+
 const App = () => {
   const dispatch = useDispatch()
   const blogFormRef = useRef()
@@ -42,19 +44,32 @@ const App = () => {
     : null
 
   return (
-    <div>
-      <div>
-        <Link to="/">blogs</Link>
-        <Link to="/users">users</Link>
-        {user ? (
-          <>
-            <em>{user.name} logged in</em>
-            <button onClick={() => dispatch(logout())}>logout</button>
-          </>
-        ) : (
-          <Link to="/login">login</Link>
-        )}
-      </div>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/">
+            blogs
+          </Button>
+          <Button color="inherit" component={Link} to="/users">
+            users
+          </Button>
+
+          {user ? (
+            <>
+              <div>{user.name} logged in</div>
+              <div>
+                <Button color="inherit" onClick={() => dispatch(logout())}>
+                  logout
+                </Button>
+              </div>
+            </>
+          ) : (
+            <Button color="inherit" component={Link} to="/login">
+              login
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
       <h2>blog app</h2>
       <Notification />
       <Routes>
@@ -70,7 +85,7 @@ const App = () => {
                 <Blogs />
               </>
             ) : (
-              <Navigate replace to="/login" />
+              <Blogs />
             )
           }
         />
@@ -83,7 +98,7 @@ const App = () => {
         <Route path="/users/:id" element={<User user={selectedUser} />} />
         <Route path="/blogs/:id" element={<BlogDetails blog={blog} />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

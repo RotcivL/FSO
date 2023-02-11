@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { incrementLike, deleteBlog } from '../reducers/blogReducer'
 import Comment from './Comment'
+
+import { Button } from '@mui/material'
 const BlogDetails = ({ blog }) => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.user)
@@ -18,12 +20,17 @@ const BlogDetails = ({ blog }) => {
 
   return (
     <div>
+      <h2>
+        {blog.title} {blog.author}
+      </h2>
       <div>
         <a href={blog.url}>{blog.url}</a>
       </div>
       <div>
         {blog.likes} likes
-        <button onClick={() => dispatch(incrementLike(blog))}>like</button>
+        <Button variant="text" onClick={() => dispatch(incrementLike(blog))}>
+          like
+        </Button>
       </div>
       added by {blog.user.name}
       {own && <button onClick={remove}>remove</button>}

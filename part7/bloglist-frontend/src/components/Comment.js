@@ -2,6 +2,15 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addComment } from '../reducers/blogReducer'
 
+import {
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from '@mui/material'
+
 const Comment = ({ id, comments }) => {
   const [comment, setComment] = useState('')
   const dispatch = useDispatch()
@@ -15,19 +24,28 @@ const Comment = ({ id, comments }) => {
     <div>
       <h3>comments</h3>
       <div>
-        <input
-          type="text"
+        <TextField
+          label="comment"
           value={comment}
-          id="comment"
-          onChange={({ target }) => setComment(target.value)}
+          variant="standard"
+          onChange={(event) => setComment(event.target.value)}
         />
-        <button onClick={handleComment}>add comment</button>
+        <div>
+          <Button variant="text" onClick={handleComment}>
+            add comment
+          </Button>
+        </div>
       </div>
-      <ul>
-        {comments.map((comment, index) => {
-          return <li key={index}>{comment}</li>
-        })}
-      </ul>
+      <List>
+        {comments.map((comment, index) => (
+          <>
+            <ListItem key={index}>
+              <ListItemText primary={comment} />
+            </ListItem>
+            <Divider />
+          </>
+        ))}
+      </List>
     </div>
   )
 }

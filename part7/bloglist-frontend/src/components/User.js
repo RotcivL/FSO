@@ -1,3 +1,4 @@
+import { Divider, List, ListItem, ListItemText } from '@mui/material'
 const User = ({ user }) => {
   if (!user) {
     return null
@@ -7,12 +8,17 @@ const User = ({ user }) => {
   return (
     <div>
       <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
-        {blogs.map((blog) => {
-          return <li key={blog.id}>{blog.title}</li>
-        })}
-      </ul>
+      <h3>Added blogs</h3>
+      <List>
+        {blogs.map((blog) => (
+          <>
+            <ListItem key={blog.id}>
+              <ListItemText primary={blog.title} secondary={blog.author} />
+            </ListItem>
+            <Divider />
+          </>
+        ))}
+      </List>
     </div>
   )
 }
