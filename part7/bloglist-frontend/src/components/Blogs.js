@@ -21,8 +21,8 @@ const Blogs = () => {
           <TableBody>
             {blogs.map((blog) => (
               <TableRow className="blog" key={blog.id}>
-                <TableCell component={Link} to={`/blogs/${blog.id}`}>
-                  {blog.title}
+                <TableCell>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
                 </TableCell>
                 <TableCell align="right">{blog.author}</TableCell>
               </TableRow>

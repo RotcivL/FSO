@@ -11,12 +11,12 @@ const User = ({ user }) => {
       <h3>Added blogs</h3>
       <List>
         {blogs.map((blog) => (
-          <>
-            <ListItem key={blog.id}>
+          <div key={blog.id}>
+            <ListItem>
               <ListItemText primary={blog.title} secondary={blog.author} />
             </ListItem>
             <Divider />
-          </>
+          </div>
         ))}
       </List>
     </div>

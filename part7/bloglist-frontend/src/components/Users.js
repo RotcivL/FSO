@@ -28,8 +28,8 @@ const Users = () => {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell component={Link} to={`/users/${user.id}`}>
-                  {user.name}
+                <TableCell>
+                  <Link to={`/users/${user.id}`}>{user.name}</Link>
                 </TableCell>
                 <TableCell align="right">{user.blogs.length}</TableCell>
               </TableRow>

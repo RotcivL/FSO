@@ -38,12 +38,12 @@ const Comment = ({ id, comments }) => {
       </div>
       <List>
         {comments.map((comment, index) => (
-          <>
-            <ListItem key={index}>
+          <div key={index}>
+            <ListItem>
               <ListItemText primary={comment} />
             </ListItem>
             <Divider />
-          </>
+          </div>
         ))}
       </List>
     </div>
