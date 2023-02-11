@@ -2,11 +2,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { incrementLike, deleteBlog } from '../reducers/blogReducer'
 import Comment from './Comment'
 const BlogDetails = ({ blog }) => {
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user)
+
   if (!blog) {
     return null
   }
-  const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.user)
   const own = user.username === blog.user.username
 
   const remove = () => {
@@ -26,7 +27,7 @@ const BlogDetails = ({ blog }) => {
       </div>
       added by {blog.user.name}
       {own && <button onClick={remove}>remove</button>}
-      <Comment comments={blog.comments} />
+      <Comment id={blog.id} comments={blog.comments} />
     </div>
   )
 }

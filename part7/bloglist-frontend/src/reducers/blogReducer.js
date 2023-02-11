@@ -23,7 +23,8 @@ const blogSlice = createSlice({
   },
 })
 
-export const { setBlogs, setBlog, appendBlog, removeBlog } = blogSlice.actions
+export const { setBlogs, setBlog, appendBlog, removeBlog, appendComment } =
+  blogSlice.actions
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -97,6 +98,13 @@ export const deleteBlog = (blog) => {
         )
       )
     }
+  }
+}
+
+export const addComment = (blogId, comment) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.addComment(blogId, { comment })
+    dispatch(setBlog(updatedBlog))
   }
 }
 
